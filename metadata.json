@@ -1,0 +1,6 @@
+{
+  "name": "SoftwDocs | Software, AI, Robotics & UV Printing Studio",
+  "description": "SoftwDocs delivers full-stack development, agentic AI, DevOps cloud, robotics hardware, graphic design, UV printing, 3D signage, and CNC fabrication.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
