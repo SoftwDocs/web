@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { MotionProvider } from "@/components/animations/MotionProvider";
+import { Navbar } from "@/components/layout/Navbar";
 import { getStructuredData, siteMetadata } from "@/lib/metadata";
 import "./globals.css";
 
@@ -37,7 +38,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(website) }}
         />
-        <MotionProvider>{children}</MotionProvider>
+        <MotionProvider>
+          <Navbar />
+          {children}
+        </MotionProvider>
       </body>
     </html>
   );
