@@ -25,12 +25,13 @@ export function Approach() {
     mm.add("(min-width: 1024px)", () => {
       const getScrollAmount = () =>
         Math.max(0, track.scrollWidth - window.innerWidth + 160);
+      if (getScrollAmount() <= 0) return;
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
           start: "top top",
-          end: () => `+=${Math.max(900, getScrollAmount() * 1.15)}`,
+          end: () => `+=${Math.max(400, getScrollAmount() * 0.9)}`,
           pin: true,
           scrub: 0.7,
           invalidateOnRefresh: true,
@@ -70,9 +71,9 @@ export function Approach() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden border-t border-[rgba(192,192,192,0.16)] bg-[#0A0A0A] py-24 sm:py-28 lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-center lg:py-20"
+      className="relative overflow-hidden border-t border-[rgba(192,192,192,0.16)] bg-[#0A0A0A] py-14 sm:py-16 lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-center lg:py-14"
     >
-      <div className="mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
+      <div className="w-full px-5 sm:px-8 lg:px-10">
         <div className="flex flex-col justify-between gap-6 border-b border-[rgba(192,192,192,0.16)] pb-8 lg:flex-row lg:items-end">
           <div>
             <div className="mb-4 inline-flex items-center gap-3">
@@ -108,13 +109,13 @@ export function Approach() {
       <div className="mt-10 w-full overflow-visible px-5 sm:px-8 lg:px-12">
         <div
           ref={trackRef}
-          className="mx-auto flex max-w-[1440px] flex-col gap-6 lg:max-w-none lg:flex-row lg:gap-8"
+          className="flex w-full flex-col gap-6 lg:flex-row lg:gap-8"
         >
           {APPROACH_STEPS.map((step, idx) => (
             <article
               key={step.number}
               data-approach-card
-              className="obsidian-panel ambient-chrome-sweep relative flex shrink-0 flex-col justify-between overflow-hidden p-7 sm:p-10 lg:min-h-[370px] lg:w-[480px] xl:w-[540px]"
+              className="obsidian-panel ambient-chrome-sweep relative flex shrink-0 flex-col justify-between overflow-hidden p-7 sm:p-10 lg:min-h-[320px] lg:w-[380px] xl:w-[440px]"
             >
               {/* Top Stage Metadata */}
               <div className="flex items-center justify-between border-b border-[rgba(192,192,192,0.14)] pb-4">

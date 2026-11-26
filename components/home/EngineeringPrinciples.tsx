@@ -64,7 +64,7 @@ export function EngineeringPrinciples() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden border-t border-[rgba(192,192,192,0.16)] bg-[#050505] py-32 sm:py-44 lg:py-56"
+      className="relative overflow-hidden border-t border-[rgba(192,192,192,0.16)] bg-[#050505] py-16 sm:py-20 lg:py-24"
     >
       {/* Full-Bleed Architectural Obsidian Horizon Artwork with Clip-Path Aperture */}
       <div
@@ -102,7 +102,7 @@ export function EngineeringPrinciples() {
         }}
       />
 
-      <div className="relative z-10 mx-auto max-w-[1440px] px-5 text-center sm:px-8 lg:px-12">
+      <div className="relative z-10 w-full px-5 text-center sm:px-8 lg:px-10">
         <div className="mb-8 inline-flex items-center gap-3">
           <span className="crimson-lacquer-bar h-[2px] w-10" aria-hidden="true" />
           <span className="font-[family-name:var(--font-space-grotesk)] text-xs font-semibold uppercase tracking-[0.28em] text-[#C5C5C5]">
@@ -122,7 +122,7 @@ export function EngineeringPrinciples() {
         />
 
         <ScrollReveal variant="clip" delay={0.1}>
-          <p className="mx-auto mt-10 max-w-2xl text-base leading-relaxed text-[#E2E2E2] sm:text-xl">
+          <p className="mx-auto mt-10 max-w-5xl text-base leading-relaxed text-[#E2E2E2] sm:text-xl">
             Every architectural decision, every interaction, and every line of
             code contributes to the experience we create.
           </p>

@@ -11,6 +11,7 @@ import React, {
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowUpRight, ChevronDown, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/Button";
@@ -21,20 +22,29 @@ import { SELECTED_PROJECTS } from "@/data/projects";
 
 const SCROLL_THRESHOLD = 20;
 
-/** Maps present and future routes to their section in the global navigation. */
+/** Maps every route family to its real, crawlable navigation page. */
 const ROUTE_SECTIONS: Array<{ pattern: RegExp; href: string }> = [
-  { pattern: /^\/services(?:\/|$)/, href: "#expertise" },
-  { pattern: /^\/industries(?:\/|$)/, href: "#solutions" },
-  { pattern: /^\/countries?(?:\/|$)/, href: "#solutions" },
-  { pattern: /^\/case-studies(?:\/|$)/, href: "#work" },
-  { pattern: /^\/insights(?:\/|$)/, href: "#insights" },
-  { pattern: /^\/blog(?:\/|$)/, href: "#insights" },
-  { pattern: /^\/contact(?:\/|$)/, href: "#contact" },
-  { pattern: /^\/about(?:\/|$)/, href: "#about" },
+  { pattern: /^\/about\/our-team\/?$/, href: "/about/our-team/" },
+  { pattern: /^\/about(?:\/|$)/, href: "/about/" },
+  { pattern: /^\/services(?:\/|$)/, href: "/services/" },
+  { pattern: /^\/industries(?:\/|$)/, href: "/industries/" },
+  { pattern: /^\/locations(?:\/|$)/, href: "/locations/" },
+  { pattern: /^\/work(?:\/|$)/, href: "/work/" },
+  { pattern: /^\/insights(?:\/|$)/, href: "/insights/" },
+  { pattern: /^\/contact(?:\/|$)/, href: "/contact/" },
 ];
 
+const EXPERTISE_SERVICE_PATHS: Record<string, string> = {
+  "software-engineering": "/services/software-development/",
+  "agentic-ai": "/services/agentic-ai-development/",
+  "cloud-devops": "/services/cloud-engineering/",
+  "custom-digital-solutions": "/services/custom-software-development/",
+  "robotics-hardware": "/services/robotics-software-development/",
+  "digital-experience": "/services/frontend-development/",
+};
+
 function sectionForPath(pathname: string): string {
-  return ROUTE_SECTIONS.find(({ pattern }) => pattern.test(pathname))?.href ?? "#home";
+  return ROUTE_SECTIONS.find(({ pattern }) => pattern.test(pathname))?.href ?? "/";
 }
 
 /** Layout effect on the client, passive effect on the server — avoids SSR warnings. */
@@ -61,15 +71,20 @@ function RouteScrollSync({
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("#home");
   const [routePath, setRoutePath] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [megaOpen, setMegaOpen] = useState(false);
+  const [megaPosition, setMegaPosition] = useState({
+    top: 0,
+    left: 0,
+    width: 860,
+  });
 
   const progressRef = useRef<HTMLDivElement>(null);
   const megaGroupRef = useRef<HTMLDivElement>(null);
   const megaTriggerRef = useRef<HTMLButtonElement>(null);
   const megaFirstLinkRef = useRef<HTMLAnchorElement>(null);
+  const megaPanelRef = useRef<HTMLDivElement>(null);
   const drawerRef = useRef<HTMLDivElement>(null);
   const openTimer = useRef<number | null>(null);
   const closeTimer = useRef<number | null>(null);
@@ -100,18 +115,6 @@ export function Navbar() {
         progressRef.current.style.transform = `scaleX(${progress})`;
       }
 
-      if (routePath === null || routePath === "/") {
-        const probeY = window.innerHeight * 0.28;
-        let current = "#home";
-        for (const link of NAV_LINKS) {
-          const id = link.href.replace("#", "");
-          const el = document.getElementById(id);
-          if (el && el.getBoundingClientRect().top <= probeY) {
-            current = `#${id}`;
-          }
-        }
-        setActiveSection((prev) => (prev === current ? prev : current));
-      }
     };
 
     const schedule = () => {
@@ -133,10 +136,7 @@ export function Navbar() {
     };
   }, [routePath]);
 
-  const activeHref =
-    routePath && routePath !== "/" ? sectionForPath(routePath) : activeSection;
-  const hrefFor = (hash: string) =>
-    routePath && routePath !== "/" ? `/${hash}` : hash;
+  const activeHref = routePath ? sectionForPath(routePath) : "/";
 
   const clearMenuTimers = useCallback(() => {
     if (openTimer.current !== null) window.clearTimeout(openTimer.current);
@@ -152,15 +152,50 @@ export function Navbar() {
 
   const closeMega = useCallback(() => {
     clearMenuTimers();
-    closeTimer.current = window.setTimeout(() => setMegaOpen(false), 180);
+    closeTimer.current = window.setTimeout(() => setMegaOpen(false), 260);
   }, [clearMenuTimers]);
+
+  /** Portal positioning keeps the panel below the fixed header instead of inside it. */
+  const updateMegaPosition = useCallback(() => {
+    if (window.innerWidth < 1024) {
+      setMegaOpen(false);
+      return;
+    }
+    const group = megaGroupRef.current;
+    if (!group) return;
+    const rect = group.getBoundingClientRect();
+    const header = group.closest("header");
+    const anchorBottom = header
+      ? header.getBoundingClientRect().bottom
+      : rect.bottom;
+    const width = Math.min(860, window.innerWidth * 0.88);
+    const edge = window.innerWidth * 0.06;
+    const idealLeft = rect.left + rect.width / 2 - width / 2;
+    const left = Math.max(edge, Math.min(idealLeft, window.innerWidth - width - edge));
+    setMegaPosition({
+      top: Math.round(anchorBottom + 8),
+      left: Math.round(left),
+      width: Math.round(width),
+    });
+  }, []);
+
+  useIsomorphicLayoutEffect(() => {
+    if (!megaOpen) return;
+    updateMegaPosition();
+    window.addEventListener("resize", updateMegaPosition);
+    return () => window.removeEventListener("resize", updateMegaPosition);
+  }, [megaOpen, updateMegaPosition]);
 
   useEffect(() => () => clearMenuTimers(), [clearMenuTimers]);
 
   useEffect(() => {
     if (!megaOpen) return;
     const onPointerDown = (event: PointerEvent) => {
-      if (!megaGroupRef.current?.contains(event.target as Node)) {
+      const target = event.target as Node;
+      if (
+        !megaGroupRef.current?.contains(target) &&
+        !megaPanelRef.current?.contains(target)
+      ) {
         setMegaOpen(false);
       }
     };
@@ -194,7 +229,7 @@ export function Navbar() {
 
         <div
           data-scrolled={isScrolled ? "true" : "false"}
-          className="navbar-cinematic pointer-events-auto relative flex w-full max-w-[1440px] items-center justify-between px-5 py-3.5 sm:px-8 lg:px-12"
+          className="navbar-cinematic pointer-events-auto relative flex w-full items-center justify-between px-5 py-3.5 sm:px-8 lg:px-10"
         >
           <div
             aria-hidden="true"
@@ -202,8 +237,8 @@ export function Navbar() {
           />
 
           {/* Logo */}
-          <a
-            href={hrefFor("#home")}
+          <Link
+            href="/"
             aria-label="SoftwDocs Home"
             className="relative z-10 flex h-11 w-20 shrink-0 items-center justify-start overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF1724] focus-visible:ring-offset-4 focus-visible:ring-offset-black sm:h-12 sm:w-24"
           >
@@ -215,16 +250,16 @@ export function Navbar() {
               priority
               className="h-[118px] w-[118px] max-w-none shrink-0 -translate-x-3 object-contain drop-shadow-[0_4px_14px_rgba(0,0,0,0.8)] sm:-translate-x-2"
             />
-          </a>
+          </Link>
 
           {/* Desktop navigation */}
           <nav
             aria-label="Primary navigation"
-            className="relative z-10 hidden items-center gap-0.5 lg:flex"
+            className="relative z-10 hidden items-center gap-0 lg:flex"
           >
             {NAV_LINKS.map((item) => {
               const isActive = activeHref === item.href;
-              const hasMega = item.href === "#expertise";
+              const hasMega = item.href === "/services/";
 
               return (
                 <div
@@ -235,9 +270,9 @@ export function Navbar() {
                   onPointerLeave={hasMega ? closeMega : undefined}
                 >
                   <Link
-                    href={hrefFor(item.href)}
+                    href={item.href}
                     aria-current={isActive ? "location" : undefined}
-                    className={`relative inline-flex items-center gap-2 rounded-sm px-3.5 py-2 text-[13px] font-medium tracking-[0.03em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF1724] ${
+                    className={`relative inline-flex items-center gap-2 rounded-sm px-3 py-2 text-[13px] font-medium tracking-[0.03em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF1724] xl:px-3.5 xl:text-[14px] ${
                       hasMega ? "pr-7" : ""
                     } ${isActive ? "text-white" : "text-[#A1A1A1] hover:text-white"}`}
                   >
@@ -253,7 +288,7 @@ export function Navbar() {
                       <motion.span
                         layoutId="nav-active-underline"
                         transition={{ type: "spring", stiffness: 420, damping: 34 }}
-                        className="absolute bottom-0 left-3.5 right-3.5 h-[2px] bg-[#FF1724]"
+                        className="absolute bottom-0 left-3 right-3 h-[2px] bg-[#FF1724] xl:left-3.5 xl:right-3.5"
                       />
                     )}
                   </Link>
@@ -289,88 +324,6 @@ export function Navbar() {
                           }`}
                         />
                       </button>
-
-                      <AnimatePresence>
-                        {megaOpen && (
-                          <motion.div
-                            id="expertise-mega-menu"
-                            style={{ x: "-50%" }}
-                            initial={{ opacity: 0, y: 10, scale: 0.985 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 6, scale: 0.99 }}
-                            transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
-                            onKeyDown={(event) => {
-                              if (event.key === "Escape") {
-                                setMegaOpen(false);
-                                megaTriggerRef.current?.focus();
-                              }
-                            }}
-                            className="obsidian-panel absolute left-1/2 top-[calc(100%+16px)] z-20 w-[min(88vw,860px)] rounded-sm p-6 sm:p-8"
-                          >
-                            <div className="grid gap-7 sm:grid-cols-2 sm:gap-9">
-                              <div>
-                                <p className="font-[family-name:var(--font-space-grotesk)] text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7A7A7A]">
-                                  Engineering Disciplines
-                                </p>
-                                <div className="mt-4 flex flex-col">
-                                  {EXPERTISE_ITEMS.map((item, index) => (
-                                    <Link
-                                      key={item.id}
-                                      ref={index === 0 ? megaFirstLinkRef : undefined}
-                                      href={hrefFor(`#${item.id}`)}
-                                      onClick={() => setMegaOpen(false)}
-                                      className="group flex items-center gap-3 rounded-sm px-3 py-2.5 text-[13px] text-[#C5C5C5] transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF1724]"
-                                    >
-                                      <span className="text-[11px] font-semibold text-[#FF1724]">
-                                        {item.number}
-                                      </span>
-                                      <span>{item.title}</span>
-                                      <ArrowUpRight
-                                        aria-hidden="true"
-                                        className="ml-auto h-3.5 w-3.5 shrink-0 text-[#FF1724] opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
-                                      />
-                                    </Link>
-                                  ))}
-                                </div>
-                              </div>
-
-                              <div className="border-t border-white/10 pt-6 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
-                                <p className="font-[family-name:var(--font-space-grotesk)] text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7A7A7A]">
-                                  Selected Work
-                                </p>
-                                <div className="mt-4 flex flex-col">
-                                  {SELECTED_PROJECTS.map((project) => (
-                                    <Link
-                                      key={project.id}
-                                      href={hrefFor(`#project-${project.id}`)}
-                                      onClick={() => setMegaOpen(false)}
-                                      className="flex flex-col gap-0.5 rounded-sm px-3 py-2.5 transition-colors hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF1724]"
-                                    >
-                                      <span className="font-[family-name:var(--font-space-grotesk)] text-[13px] font-semibold tracking-[0.08em] text-[#F5F5F5]">
-                                        {project.name}
-                                      </span>
-                                      <span className="text-[11px] text-[#7A7A7A]">
-                                        {project.industry}
-                                      </span>
-                                    </Link>
-                                  ))}
-                                </div>
-                                <Button
-                                  variant="primary"
-                                  showArrow
-                                  onClick={() => {
-                                    setMegaOpen(false);
-                                    openInquiry();
-                                  }}
-                                  className="mt-5 w-full justify-center"
-                                >
-                                  Discuss a Project
-                                </Button>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
                     </>
                   )}
                 </div>
@@ -384,7 +337,7 @@ export function Navbar() {
               variant="primary"
               showArrow
               onClick={() => openInquiry()}
-              className="hidden font-[family-name:var(--font-space-grotesk)] text-[11px] font-semibold uppercase tracking-[0.14em] sm:inline-flex"
+              className="hidden font-[family-name:var(--font-space-grotesk)] text-[11px] font-semibold uppercase tracking-[0.14em] sm:inline-flex lg:px-4 lg:py-2.5 lg:text-[11px] xl:px-6 xl:py-3.5 xl:text-sm"
             >
               Let&apos;s Build Something
             </Button>
@@ -418,6 +371,107 @@ export function Navbar() {
           </div>
         </div>
       </header>
+
+      {/* Services mega menu portal — rendered outside the header stacking context. */}
+      {typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {megaOpen && (
+              <motion.div
+                ref={megaPanelRef}
+                id="expertise-mega-menu"
+                role="group"
+                aria-label="Engineering services menu"
+                style={{
+                  position: "fixed",
+                  top: megaPosition.top,
+                  left: megaPosition.left,
+                  width: megaPosition.width,
+                  zIndex: 60,
+                  pointerEvents: "auto",
+                }}
+                initial={{ opacity: 0, y: 10, scale: 0.985 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 6, scale: 0.99 }}
+                transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+                onPointerEnter={clearMenuTimers}
+                onPointerLeave={closeMega}
+                onKeyDown={(event) => {
+                  if (event.key === "Escape") {
+                    setMegaOpen(false);
+                    megaTriggerRef.current?.focus();
+                  }
+                }}
+                className="obsidian-panel pointer-events-auto fixed z-[60] rounded-sm p-6 sm:p-8"
+              >
+                <div className="grid gap-7 sm:grid-cols-2 sm:gap-9">
+                  <div>
+                    <p className="font-[family-name:var(--font-space-grotesk)] text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7A7A7A]">
+                      Engineering Disciplines
+                    </p>
+                    <div className="mt-4 flex flex-col">
+                      {EXPERTISE_ITEMS.map((item, index) => (
+                        <Link
+                          key={item.id}
+                          ref={index === 0 ? megaFirstLinkRef : undefined}
+                          href={
+                            EXPERTISE_SERVICE_PATHS[item.id] ?? "/services/"
+                          }
+                          onClick={() => setMegaOpen(false)}
+                          className="group flex items-center gap-3 rounded-sm px-3 py-2.5 text-[13px] text-[#C5C5C5] transition-colors hover:bg-white/[0.04] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF1724]"
+                        >
+                          <span className="text-[11px] font-semibold text-[#FF1724]">
+                            {item.number}
+                          </span>
+                          <span>{item.title}</span>
+                          <ArrowUpRight
+                            aria-hidden="true"
+                            className="ml-auto h-3.5 w-3.5 shrink-0 text-[#FF1724] opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+                          />
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="border-t border-white/10 pt-6 sm:border-l sm:border-t-0 sm:pl-8 sm:pt-0">
+                    <p className="font-[family-name:var(--font-space-grotesk)] text-[11px] font-semibold uppercase tracking-[0.22em] text-[#7A7A7A]">
+                      Selected Work
+                    </p>
+                    <div className="mt-4 flex flex-col">
+                      {SELECTED_PROJECTS.map((project) => (
+                        <Link
+                          key={project.id}
+                          href={`/work/${project.id}/`}
+                          onClick={() => setMegaOpen(false)}
+                          className="flex flex-col gap-0.5 rounded-sm px-3 py-2.5 transition-colors hover:bg-white/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF1724]"
+                        >
+                          <span className="font-[family-name:var(--font-space-grotesk)] text-[13px] font-semibold tracking-[0.08em] text-[#F5F5F5]">
+                            {project.name}
+                          </span>
+                          <span className="text-[11px] text-[#7A7A7A]">
+                            {project.industry}
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                    <Button
+                      variant="primary"
+                      showArrow
+                      onClick={() => {
+                        setMegaOpen(false);
+                        openInquiry();
+                      }}
+                      className="mt-5 w-full justify-center"
+                    >
+                      Discuss a Project
+                    </Button>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
 
       {/* Mobile navigation drawer */}
       <AnimatePresence>
@@ -475,7 +529,7 @@ export function Navbar() {
                         transition={{ delay: index * 0.04, duration: 0.25 }}
                       >
                         <Link
-                          href={hrefFor(item.href)}
+                          href={item.href}
                           onClick={() => setMobileOpen(false)}
                           aria-current={isActive ? "location" : undefined}
                           className={`flex items-center justify-between border-b border-white/[0.08] py-3.5 font-[family-name:var(--font-space-grotesk)] text-lg font-medium transition-colors hover:text-[#FF1724] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF1724] ${

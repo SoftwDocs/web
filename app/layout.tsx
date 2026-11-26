@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import type { ReactNode } from "react";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { MotionProvider } from "@/components/animations/MotionProvider";
+import { Footer } from "@/components/layout/Footer";
 import { Navbar } from "@/components/layout/Navbar";
 import { getStructuredData, siteMetadata } from "@/lib/metadata";
 import "./globals.css";
@@ -21,7 +23,7 @@ const inter = Inter({
 
 export const metadata: Metadata = siteMetadata;
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   const { organization, website } = getStructuredData();
 
   return (
@@ -41,6 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <MotionProvider>
           <Navbar />
           {children}
+          <Footer />
         </MotionProvider>
       </body>
     </html>

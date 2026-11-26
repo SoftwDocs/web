@@ -38,7 +38,7 @@ export function SectionHeading({
       />
 
       {description && (
-        <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#A1A1A1] sm:text-lg">
+        <p className="mt-6 text-base leading-relaxed text-[#A1A1A1] sm:text-lg">
           {description}
         </p>
       )}

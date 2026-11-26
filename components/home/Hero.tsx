@@ -88,7 +88,7 @@ export function Hero() {
       />
 
       {/* Top Editorial Frame Strip */}
-      <div className="relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
+      <div className="relative z-10 w-full px-5 sm:px-8 lg:px-10">
         <div
           data-hero-meta
           className="flex flex-wrap items-center justify-between gap-4 border-b border-[rgba(192,192,192,0.18)] pb-4"
@@ -110,7 +110,7 @@ export function Hero() {
       </div>
 
       {/* Monumental Asymmetric Poster Typography */}
-      <div className="relative z-10 mx-auto my-auto w-full max-w-[1440px] px-5 py-10 sm:px-8 lg:px-12">
+      <div className="relative z-10 my-auto w-full px-5 py-10 sm:px-8 lg:px-10">
         <h1 className="font-[family-name:var(--font-space-grotesk)] text-[clamp(3.15rem,9.2vw,8.75rem)] font-bold leading-[0.89] tracking-[-0.04em]">
           <span className="block overflow-hidden pb-[0.04em]">
             <span data-hero-line className="block text-[#F5F5F5]">
@@ -131,7 +131,7 @@ export function Hero() {
       </div>
 
       {/* Bottom Architectural Dock */}
-      <div className="relative z-10 mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-12">
+      <div className="relative z-10 w-full px-5 sm:px-8 lg:px-10">
         <div className="chrome-hairline mb-6" />
         <div className="grid grid-cols-1 items-end gap-8 lg:grid-cols-12">
           <div data-hero-footer className="lg:col-span-6">

@@ -1,4 +1,3 @@
-import { Footer } from "@/components/layout/Footer";
 import { Hero } from "@/components/home/Hero";
 import { Manifesto } from "@/components/home/Manifesto";
 import { Expertise } from "@/components/home/Expertise";
@@ -27,7 +26,6 @@ export default function Home() {
         <Insights />
         <FinalCTA />
       </main>
-      <Footer />
     </div>
   );
 }

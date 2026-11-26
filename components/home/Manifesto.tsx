@@ -130,7 +130,7 @@ export function Manifesto() {
     <section
       ref={sectionRef}
       id="about"
-      className="relative overflow-hidden border-t border-[rgba(192,192,192,0.16)] bg-[#070707] py-28 sm:py-36 lg:py-48"
+      className="relative overflow-hidden border-t border-[rgba(192,192,192,0.16)] bg-[#070707] py-16 sm:py-20 lg:py-24"
     >
       {/* Full-bleed Custom 3D Monolith Backdrop */}
       <div
@@ -155,7 +155,7 @@ export function Manifesto() {
         }}
       />
 
-      <div className="relative z-10 mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+      <div className="relative z-10 w-full px-5 sm:px-8 lg:px-10">
         {/* Eyebrow */}
         <div className="mb-10 flex items-center justify-between border-b border-[rgba(192,192,192,0.16)] pb-4">
           <div className="inline-flex items-center gap-3">

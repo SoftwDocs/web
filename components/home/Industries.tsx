@@ -17,9 +17,9 @@ export function Industries() {
   return (
     <section
       id="solutions"
-      className="relative border-t border-[rgba(192,192,192,0.16)] bg-[#080808] py-24 sm:py-32 lg:py-40"
+      className="relative border-t border-[rgba(192,192,192,0.16)] bg-[#080808] py-14 sm:py-16 lg:py-20"
     >
-      <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+      <div className="w-full px-5 sm:px-8 lg:px-10">
         <div className="flex flex-col justify-between gap-8 border-b border-[rgba(192,192,192,0.16)] pb-12 lg:flex-row lg:items-end">
           <div>
             <div className="mb-5 inline-flex items-center gap-3">

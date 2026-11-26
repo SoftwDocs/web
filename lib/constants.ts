@@ -1,6 +1,6 @@
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/+$/, "") ||
-  "https://softwdocs.com";
+  "https://softwdocs.site";
 
 export const BRAND = {
   name: "SoftwDocs",
@@ -15,13 +15,15 @@ export const BRAND = {
 } as const;
 
 export const NAV_LINKS = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Expertise", href: "#expertise" },
-  { label: "Solutions", href: "#solutions" },
-  { label: "Work", href: "#work" },
-  { label: "Insights", href: "#insights" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/" },
+  { label: "About", href: "/about/" },
+  { label: "Our Team", href: "/about/our-team/" },
+  { label: "Services", href: "/services/" },
+  { label: "Industries", href: "/industries/" },
+  { label: "Locations", href: "/locations/" },
+  { label: "Work", href: "/work/" },
+  { label: "Insights", href: "/insights/" },
+  { label: "Contact", href: "/contact/" },
 ] as const;
 
 export type VerifiedSocialLink = {

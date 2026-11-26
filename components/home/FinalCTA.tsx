@@ -60,7 +60,7 @@ export function FinalCTA() {
       ref={sectionRef}
       id="contact"
       onPointerMove={handlePointerMove}
-      className="relative overflow-hidden border-t border-[rgba(192,192,192,0.18)] bg-[#060606] py-32 sm:py-44 lg:py-52"
+      className="relative overflow-hidden border-t border-[rgba(192,192,192,0.18)] bg-[#060606] py-16 sm:py-20 lg:py-24"
     >
       {/* Bespoke 3D Monolith Artwork Backdrop */}
       <div
@@ -94,8 +94,8 @@ export function FinalCTA() {
         }}
       />
 
-      <div className="relative z-10 mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
-        <div className="max-w-4xl">
+      <div className="relative z-10 w-full px-5 sm:px-8 lg:px-10">
+        <div>
           <div className="mb-7 inline-flex items-center gap-3">
             <span className="crimson-beacon h-2.5 w-2.5 rounded-full" aria-hidden="true" />
             <span className="font-[family-name:var(--font-space-grotesk)] text-xs font-semibold uppercase tracking-[0.26em] text-[#C5C5C5]">
@@ -114,7 +114,7 @@ export function FinalCTA() {
           />
 
           <ScrollReveal variant="clip" delay={0.1}>
-            <p className="mt-9 max-w-2xl text-base leading-relaxed text-[#D0D0D0] sm:text-xl">
+            <p className="mt-9 text-base leading-relaxed text-[#D0D0D0] sm:text-xl">
               Have a complex challenge, an ambitious product idea, or a system
               that needs a better engineering approach? Let&apos;s explore what
               we can build together.

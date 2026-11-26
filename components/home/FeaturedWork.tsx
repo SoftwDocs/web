@@ -38,9 +38,9 @@ export function FeaturedWork() {
   return (
     <section
       id="work"
-      className="relative border-t border-[rgba(192,192,192,0.16)] bg-[#060606] py-24 sm:py-32 lg:py-40"
+      className="relative border-t border-[rgba(192,192,192,0.16)] bg-[#060606] py-14 sm:py-16 lg:py-20"
     >
-      <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+      <div className="w-full px-5 sm:px-8 lg:px-10">
         {/* Section Header */}
         <div className="mb-20 border-b border-[rgba(192,192,192,0.16)] pb-12">
           <div className="mb-5 inline-flex items-center gap-3">
@@ -64,7 +64,7 @@ export function FeaturedWork() {
         <ScrollReveal variant="clip">
           <article
             id={`project-${fujifenix.id}`}
-            className="group relative border-b border-[rgba(192,192,192,0.16)] pb-24"
+            className="group relative border-b border-[rgba(192,192,192,0.16)] pb-14"
           >
             <div className="flex flex-wrap items-baseline justify-between gap-4">
               <div>
@@ -194,7 +194,7 @@ export function FeaturedWork() {
         <ScrollReveal variant="clip">
           <article
             id={`project-${karachiGum.id}`}
-            className="group relative border-b border-[rgba(192,192,192,0.16)] py-24"
+            className="group relative border-b border-[rgba(192,192,192,0.16)] py-14"
           >
             <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-12">
               <div className="flex flex-col justify-between lg:col-span-4">
@@ -315,7 +315,7 @@ export function FeaturedWork() {
             CASE STUDY 03 — EDGEWAY SECURITY (Dual-Layer Console Spread)
            ============================================================ */}
         <ScrollReveal variant="clip">
-          <article id={`project-${edgeway.id}`} className="group relative pt-24">
+          <article id={`project-${edgeway.id}`} className="group relative pt-14">
             <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
               <div className="relative lg:col-span-7">
                 <div className="obsidian-panel ambient-chrome-sweep relative overflow-hidden p-6 sm:p-9">

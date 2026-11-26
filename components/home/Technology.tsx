@@ -21,8 +21,8 @@ export function Technology() {
   const connectedIds = RELATIONSHIPS[activeId] ?? [];
 
   return (
-    <section className="relative border-t border-[rgba(192,192,192,0.16)] bg-[#080808] py-24 sm:py-32 lg:py-40">
-      <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+    <section className="relative border-t border-[rgba(192,192,192,0.16)] bg-[#080808] py-14 sm:py-16 lg:py-20">
+      <div className="w-full px-5 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 gap-8 border-b border-[rgba(192,192,192,0.16)] pb-12 lg:grid-cols-12 lg:items-end">
           <div className="lg:col-span-8">
             <div className="mb-5 inline-flex items-center gap-3">

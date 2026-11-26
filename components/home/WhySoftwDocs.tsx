@@ -61,9 +61,9 @@ export function WhySoftwDocs() {
   return (
     <section
       ref={sectionRef}
-      className="relative overflow-hidden border-t border-[rgba(192,192,192,0.16)] bg-[#0A0A0A] py-24 sm:py-32 lg:py-40"
+      className="relative overflow-hidden border-t border-[rgba(192,192,192,0.16)] bg-[#0A0A0A] py-14 sm:py-16 lg:py-20"
     >
-      <div className="mx-auto max-w-[1440px] px-5 sm:px-8 lg:px-12">
+      <div className="w-full px-5 sm:px-8 lg:px-10">
         {/* Top Monumental Display Headline */}
         <div className="mb-16 border-b border-[rgba(192,192,192,0.16)] pb-12">
           <div className="mb-5 inline-flex items-center gap-3">
@@ -138,7 +138,7 @@ export function WhySoftwDocs() {
                   </span>
                 </div>
 
-                <p className="mt-3 max-w-2xl pl-0 text-base leading-relaxed text-[#A1A1A1] sm:pl-12 sm:text-lg">
+                <p className="mt-3 pl-0 text-base leading-relaxed text-[#A1A1A1] sm:pl-12 sm:text-lg">
                   {pillar.description}
                 </p>
               </article>
